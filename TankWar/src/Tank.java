@@ -111,9 +111,16 @@ public class Tank {
 		if (this.dir != Direction.STEADY) {
 			this.barrelDir = this.dir;
 		}
-		if (x < 0 || y < 0 || x > TankClient.WIDTH || y > TankClient.HEIGHT) {
-			
-		}
+
+		if (x < 0)
+			x = 0;
+		if (y < 30)
+			y = 30;
+		if (x + Tank.WIDTH > TankClient.WIDTH)
+			x = TankClient.WIDTH - Tank.WIDTH;
+		if (y + Tank.HEIGHT > TankClient.HEIGHT)
+			y = TankClient.HEIGHT - Tank.HEIGHT;
+
 	}
 
 	public void keyPressed(KeyEvent e) {
