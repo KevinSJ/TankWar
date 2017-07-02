@@ -14,6 +14,10 @@ public class Tank {
 	private int x, y;
 	private static final int X_SPEED = 5;
 	private static final int Y_SPEED = 5;
+	private static final int WIDTH = 30;
+	private static final int HEIGHT = 30;
+
+	TankClient tc;
 
 	private boolean bL = false, bU = false, bR = false, bD = false;
 
@@ -28,10 +32,15 @@ public class Tank {
 		this.y = y;
 	}
 
+	public Tank(int x, int y, TankClient tc) {
+		this(x, y);
+		this.tc = tc;
+	}
+
 	public void draw(Graphics g) {
 		Color c = g.getColor();
 		g.setColor(Color.RED);
-		g.fillOval(x, y, 30, 30);
+		g.fillOval(x, y, WIDTH, HEIGHT);
 		g.setColor(c);
 		move();
 	}
@@ -74,6 +83,9 @@ public class Tank {
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		switch (key) {
+		case KeyEvent.VK_CONTROL:
+			tc.m = fire();
+			break;
 		case KeyEvent.VK_LEFT:
 			bL = true;
 			break;
@@ -129,6 +141,9 @@ public class Tank {
 			dir = Direction.LD;
 		else if (!bL && !bU && !bR && !bD)
 			dir = Direction.STEADY;
+	}
 
+	public Missile fire() {
+		return new Missile(this.x + WIDTH / 2 - Missile.getWidth() / 2, this.y + HEIGHT / 2 - Missile.getHeight() / 2, dir);
 	}
 }

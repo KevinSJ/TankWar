@@ -73,4 +73,18 @@ public class Missile {
 		}		
 	}
 
+	/**
+	 * @return the width
+	 */
+	public static int getWidth() {
+		return WIDTH;
+	}
+
+	/**
+	 * @return the height
+	 */
+	public static int getHeight() {
+		return HEIGHT;
+	}
+
 }
