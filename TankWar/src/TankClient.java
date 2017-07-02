@@ -2,11 +2,17 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class TankClient extends Frame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6735016569246334982L;
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 600;
 	int x = 50, y = 50;
@@ -23,6 +29,7 @@ public class TankClient extends Frame {
 				System.exit(0);
 			}
 		});
+		this.addKeyListener(new KeyMonitor());
 		this.setResizable(false);
 		this.setBackground(Color.GREEN);
 		this.setVisible(true);
@@ -45,8 +52,6 @@ public class TankClient extends Frame {
 		g.setColor(Color.RED);
 		g.fillOval(x, y, 30, 30);
 		g.setColor(c);
-
-		y += 5;
 	}
 
 	@Override
@@ -79,6 +84,36 @@ public class TankClient extends Frame {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+			}
+		}
+
+	}
+
+	private class KeyMonitor extends KeyAdapter {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.awt.event.KeyAdapter#keyPressed(java.awt.event.KeyEvent)
+		 */
+		@Override
+		public void keyPressed(KeyEvent e) {
+			super.keyPressed(e);
+			System.out.println("Ok" + e.getKeyChar());
+			int key = e.getKeyCode();
+			switch (key) {
+			case KeyEvent.VK_LEFT:
+				x -= 5;
+				break;
+			case KeyEvent.VK_UP:
+				y -= 5;
+				break;
+			case KeyEvent.VK_RIGHT:
+				x += 5;
+				break;
+			case KeyEvent.VK_DOWN:
+				y += 5;
+				break;
 			}
 		}
 
