@@ -14,9 +14,23 @@ public class Missile {
 	private static final int HEIGHT = 10;
 	private static final int X_SPEED = 10;
 	private static final int Y_SPEED = 10;
-
+	private boolean live = true;
 	private int x, y;
 	private Direction dir;
+	private TankClient tc;
+
+	/**
+	 * @param x
+	 * @param y
+	 * @param dir
+	 * @param tc
+	 */
+	public Missile(int x, int y, Direction dir, TankClient tc) {
+		this.x = x;
+		this.y = y;
+		this.dir = dir;
+		this.tc = tc;
+	}
 
 	/**
 	 * @param x
@@ -70,7 +84,12 @@ public class Missile {
 			break;
 		case STEADY:
 			break;
-		}		
+		}
+
+		if (x < 0 || y < 0 || x > TankClient.WIDTH || y > TankClient.HEIGHT) {
+			live = false;
+			tc.ms.remove(this);
+		}
 	}
 
 	/**
@@ -85,6 +104,13 @@ public class Missile {
 	 */
 	public static int getHeight() {
 		return HEIGHT;
+	}
+
+	/**
+	 * @return the live
+	 */
+	public boolean isLive() {
+		return live;
 	}
 
 }

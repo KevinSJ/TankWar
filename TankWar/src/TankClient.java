@@ -6,6 +6,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author kevin
@@ -21,7 +23,7 @@ public class TankClient extends Frame {
 	public static final int HEIGHT = 600;
 
 	Tank myTank = new Tank(50, 50, this);
-	Missile m;
+	List<Missile> ms = new CopyOnWriteArrayList<>();
 	Image offScreenImg = null;
 
 	public void launchFrame() {
@@ -53,13 +55,15 @@ public class TankClient extends Frame {
 	}
 
 	public void paint(Graphics g) {
-		if(m!= null) m.draw(g);
+		// g.drawString("Missiles Count: " + this.ms.size(), 10, 50);
+		// ms = ms.stream().filter(ms ->
+		// ms.isLive()).collect(Collectors.toList());
+		ms.forEach(ms -> ms.draw(g));
 		myTank.draw(g);
 	}
 
 	@Override
 	public void update(Graphics g) {
-		super.update(g);
 		if (offScreenImg == null)
 			offScreenImg = this.createImage(WIDTH, HEIGHT);
 		Graphics graphics = offScreenImg.getGraphics();
