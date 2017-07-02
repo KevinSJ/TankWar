@@ -7,6 +7,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * @author kevin
+ *
+ */
 public class TankClient extends Frame {
 
 	/**
@@ -15,8 +19,8 @@ public class TankClient extends Frame {
 	private static final long serialVersionUID = -6735016569246334982L;
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 600;
-	int x = 50, y = 50;
 
+	Tank myTank = new Tank(50, 50);
 	Image offScreenImg = null;
 
 	public void launchFrame() {
@@ -48,15 +52,11 @@ public class TankClient extends Frame {
 	}
 
 	public void paint(Graphics g) {
-		Color c = g.getColor();
-		g.setColor(Color.RED);
-		g.fillOval(x, y, 30, 30);
-		g.setColor(c);
+		myTank.draw(g);
 	}
 
 	@Override
 	public void update(Graphics g) {
-		// TODO Auto-generated method stub
 		super.update(g);
 		if (offScreenImg == null)
 			offScreenImg = this.createImage(WIDTH, HEIGHT);
@@ -98,23 +98,7 @@ public class TankClient extends Frame {
 		 */
 		@Override
 		public void keyPressed(KeyEvent e) {
-			super.keyPressed(e);
-			System.out.println("Ok" + e.getKeyChar());
-			int key = e.getKeyCode();
-			switch (key) {
-			case KeyEvent.VK_LEFT:
-				x -= 5;
-				break;
-			case KeyEvent.VK_UP:
-				y -= 5;
-				break;
-			case KeyEvent.VK_RIGHT:
-				x += 5;
-				break;
-			case KeyEvent.VK_DOWN:
-				y += 5;
-				break;
-			}
+			myTank.keyPressed(e);
 		}
 
 	}
