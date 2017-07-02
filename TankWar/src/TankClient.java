@@ -101,5 +101,15 @@ public class TankClient extends Frame {
 			myTank.keyPressed(e);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.awt.event.KeyAdapter#keyReleased(java.awt.event.KeyEvent)
+		 */
+		@Override
+		public void keyReleased(KeyEvent e) {
+			myTank.keyRelease(e);
+		}
+
 	}
 }
