@@ -17,10 +17,6 @@ public class Tank {
 
 	private boolean bL = false, bU = false, bR = false, bD = false;
 
-	enum Direction {
-		L, LU, U, RU, R, RD, D, LD, STEADY
-	};
-
 	private Direction dir = Direction.STEADY;
 
 	/**
