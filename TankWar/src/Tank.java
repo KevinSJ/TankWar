@@ -1,6 +1,8 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 /**
  * 
@@ -16,11 +18,13 @@ public class Tank {
 	private static final int Y_SPEED = 5;
 	private static final int WIDTH = 30;
 	private static final int HEIGHT = 30;
-
+	private static final Random r = new Random();
+	private boolean good;
+	private boolean live = true;
 	TankClient tc;
 
 	private boolean bL = false, bU = false, bR = false, bD = false;
-
+	private int step = r.nextInt(12) + 3;
 	private Direction dir = Direction.STEADY;
 	private Direction barrelDir = Direction.D;
 
@@ -28,19 +32,26 @@ public class Tank {
 	 * @param x
 	 * @param y
 	 */
-	public Tank(int x, int y) {
+	public Tank(int x, int y, boolean good) {
 		this.x = x;
 		this.y = y;
+		this.good = good;
 	}
 
-	public Tank(int x, int y, TankClient tc) {
-		this(x, y);
+	public Tank(int x, int y, boolean good, Direction dir, TankClient tc) {
+		this(x, y, good);
 		this.tc = tc;
+		this.dir = dir;
 	}
 
 	public void draw(Graphics g) {
+		if (!live) {
+			if (!good)
+				tc.ets.remove(this);
+			return;
+		}
 		Color c = g.getColor();
-		g.setColor(Color.RED);
+		g.setColor(good ? Color.RED : Color.BLUE);
 		g.fillOval(x, y, WIDTH, HEIGHT);
 		g.setColor(Color.BLACK);
 		switch (barrelDir) {
@@ -76,6 +87,7 @@ public class Tank {
 	}
 
 	public void move() {
+
 		switch (dir) {
 		case L:
 			x -= X_SPEED;
@@ -120,7 +132,15 @@ public class Tank {
 			x = TankClient.WIDTH - Tank.WIDTH;
 		if (y + Tank.HEIGHT > TankClient.HEIGHT)
 			y = TankClient.HEIGHT - Tank.HEIGHT;
-
+		if (!good) {
+			if (step == 0) {
+				step = r.nextInt(12) + 3;
+				this.dir = Direction.values()[r.nextInt(Direction.values().length)];
+			}
+			step--;
+			if (r.nextInt(30) > 28)
+				this.fire();
+		}
 	}
 
 	public void keyPressed(KeyEvent e) {
@@ -166,6 +186,10 @@ public class Tank {
 
 	}
 
+	public Rectangle getRect() {
+		return new Rectangle(x, y, WIDTH, HEIGHT);
+	}
+
 	public void locateDir() {
 		if (bL && !bU && !bR && !bD)
 			dir = Direction.L;
@@ -188,7 +212,38 @@ public class Tank {
 	}
 
 	public void fire() {
-		tc.ms.add(new Missile(this.x + WIDTH / 2 - Missile.getWidth() / 2,
-				this.y + HEIGHT / 2 - Missile.getHeight() / 2, barrelDir, this.tc));
+		if (live)
+			tc.ms.add(new Missile(this.x + WIDTH / 2 - Missile.getWidth() / 2,
+					this.y + HEIGHT / 2 - Missile.getHeight() / 2, good, barrelDir, this.tc));
+	}
+
+	/**
+	 * @return the live
+	 */
+	public boolean isLive() {
+		return live;
+	}
+
+	/**
+	 * @param live
+	 *            the live to set
+	 */
+	public void setLive(boolean live) {
+		this.live = live;
+	}
+
+	/**
+	 * @return the good
+	 */
+	public boolean isGood() {
+		return good;
+	}
+
+	/**
+	 * @param good
+	 *            the good to set
+	 */
+	public void setGood(boolean good) {
+		this.good = good;
 	}
 }

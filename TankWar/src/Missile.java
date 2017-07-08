@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.util.List;
 
 /**
  * 
@@ -18,6 +20,7 @@ public class Missile {
 	private int x, y;
 	private Direction dir;
 	private TankClient tc;
+	private boolean good;
 
 	/**
 	 * @param x
@@ -25,10 +28,11 @@ public class Missile {
 	 * @param dir
 	 * @param tc
 	 */
-	public Missile(int x, int y, Direction dir, TankClient tc) {
+	public Missile(int x, int y, boolean good, Direction dir, TankClient tc) {
 		this.x = x;
 		this.y = y;
 		this.dir = dir;
+		this.setGood(good);
 		this.tc = tc;
 	}
 
@@ -44,6 +48,10 @@ public class Missile {
 	}
 
 	public void draw(Graphics g) {
+		if (!live) {
+			tc.ms.remove(this);
+			return;
+		}
 		Color c = g.getColor();
 		g.setColor(Color.BLACK);
 		g.fillOval(x, y, WIDTH, HEIGHT);
@@ -52,7 +60,6 @@ public class Missile {
 	}
 
 	private void move() {
-
 		switch (dir) {
 		case L:
 			x -= X_SPEED;
@@ -88,8 +95,30 @@ public class Missile {
 
 		if (x < 0 || y < 0 || x > TankClient.WIDTH || y > TankClient.HEIGHT) {
 			live = false;
-			tc.ms.remove(this);
 		}
+	}
+
+	public Rectangle getRect() {
+		return new Rectangle(x, y, WIDTH, HEIGHT);
+	}
+
+	/**
+	 * @param t
+	 * @return
+	 */
+	public boolean hitTank(Tank t) {
+		if (this.live && this.getRect().intersects(t.getRect()) && t.isLive() && this.good != t.isGood()) {
+			t.setLive(false);
+			this.live = false;
+			tc.es.add(new Explode(tc, x, y));
+			return true;
+		}
+		return false;
+	}
+
+	public boolean hitTanks(List<Tank> tanks) {
+		//if any of the Tanks in the list is hit, return true.
+		return tanks.stream().filter(t -> hitTank(t) == true).findFirst().isPresent();
 	}
 
 	/**
@@ -111,6 +140,14 @@ public class Missile {
 	 */
 	public boolean isLive() {
 		return live;
+	}
+
+	public boolean isGood() {
+		return good;
+	}
+
+	public void setGood(boolean good) {
+		this.good = good;
 	}
 
 }

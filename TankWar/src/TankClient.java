@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -22,11 +23,18 @@ public class TankClient extends Frame {
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 600;
 
-	Tank myTank = new Tank(50, 50, this);
+	Tank myTank = new Tank(50, 50, true, Direction.STEADY, this);
+	static Random r = new Random();
+
 	List<Missile> ms = new CopyOnWriteArrayList<>();
+	List<Explode> es = new CopyOnWriteArrayList<>();
+	List<Tank> ets = new CopyOnWriteArrayList<>();
 	Image offScreenImg = null;
 
 	public void launchFrame() {
+		for (int i = 0; i < 10; i++) {
+			ets.add(new Tank(50 + 40 * (i + 1), 50, false, Direction.values()[r.nextInt(Direction.values().length)], this));
+		}
 		this.setLocation(400, 300);
 		this.setSize(WIDTH, HEIGHT);
 		this.setTitle("Tank War");
@@ -55,10 +63,18 @@ public class TankClient extends Frame {
 	}
 
 	public void paint(Graphics g) {
-		// g.drawString("Missiles Count: " + this.ms.size(), 10, 50);
+//		g.drawString("Missiles Count: " + this.ms.size(), 100, 100);
+//		g.drawString("Explode Count: " + this.es.size(), 100, 120);
+
 		// ms = ms.stream().filter(ms ->
 		// ms.isLive()).collect(Collectors.toList());
-		ms.forEach(ms -> ms.draw(g));
+		ms.forEach(ms -> {
+			ms.hitTank(myTank);
+			ms.hitTanks(ets);
+			ms.draw(g);
+		});
+		es.forEach(e -> e.draw(g));
+		ets.stream().forEach(t -> t.draw(g));
 		myTank.draw(g);
 	}
 
